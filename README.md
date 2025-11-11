@@ -32,3 +32,6 @@ ioc-enrichment-dockerized/
 └─ README.md
 ```
 Important: you will provide the API keys (CrowdStrike client id/secret and VirusTotal API key) by creating a .env file from .env.example before starting the stack.
+
+`docker compose build enrich`
+`docker compose up -d`
