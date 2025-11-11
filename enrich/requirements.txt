@@ -1,0 +1,4 @@
+crowdstrike-falconpy
+requests
+elasticsearch>=8.0.0
+python-dotenv
