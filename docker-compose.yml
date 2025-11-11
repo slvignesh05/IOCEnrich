@@ -1,0 +1,44 @@
+version: '3.8'
+services:
+elasticsearch:
+image: docker.elastic.co/elasticsearch/elasticsearch:8.9.0
+environment:
+- discovery.type=single-node
+- xpack.security.enabled=false
+- ES_JAVA_OPTS=-Xms512m -Xmx512m
+ports:
+- '9200:9200'
+volumes:
+- esdata:/usr/share/elasticsearch/data
+
+
+grafana:
+image: grafana/grafana:10.0.0
+environment:
+- GF_SECURITY_ADMIN_USER=admin
+- GF_SECURITY_ADMIN_PASSWORD=admin
+volumes:
+- ./grafana/provisioning:/etc/grafana/provisioning
+- ./grafana/dashboards:/var/lib/grafana/dashboards
+ports:
+- '3000:3000'
+
+
+enrich:
+build: ./enrich
+environment:
+- FALCON_CLIENT_ID=${FALCON_CLIENT_ID}
+- FALCON_CLIENT_SECRET=${FALCON_CLIENT_SECRET}
+- VIRUSTOTAL_API_KEY=${VIRUSTOTAL_API_KEY}
+- ES_URL=http://elasticsearch:9200
+- ES_INDEX=ioc-enriched
+depends_on:
+- elasticsearch
+- grafana
+volumes:
+- ./enrich:/app
+restart: unless-stopped
+
+
+volumes:
+esdata:
